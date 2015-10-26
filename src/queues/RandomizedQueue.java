@@ -23,14 +23,17 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	// add the item
 	public void enqueue(Item item) {
-		if (item == null) throw new java.lang.NullPointerException();
+		if (item == null) throw new java.lang.NullPointerException("Null item unacceptable");
+		
+		// If tail meets head, resize the queue first, then increment tail.
+		if (head == (tail + 1) % length) resize(2 * length);
 		randque[tail] = item;
 		tail = (tail + 1) % length;
-		if (head == tail) resize(2 * length);
 	}
 	
 	// remove and return a random item
 	public Item dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("Queue underflow");
 		int randIdx = randomIndex();
 		Item item = randque[randIdx];
 		randque[randIdx] = randque[head];
@@ -42,7 +45,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	}
 	
 	// return (but do not remove) a random item
-	public Item sample() { return randque[randomIndex()]; }
+	public Item sample() {
+        if (isEmpty()) throw new NoSuchElementException("Queue underflow");
+        return randque[randomIndex()];
+	}
 	
 	// return an independent iterator over items in random order
 	public Iterator<Item> iterator() {return new RandomizedArrayIterator();}         
@@ -51,12 +57,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		private int i = 0;
 
 		public RandomizedArrayIterator() {
-			if (head <= tail) StdRandom.shuffle(randque, head, tail - 1);
-			else {
+			if (head > tail) {
 				StdRandom.shuffle(randque, 0, tail - 1);
 				StdRandom.shuffle(randque, head, length - 1);
 			}
-
+			else if (head < tail - 1) StdRandom.shuffle(randque, head, tail - 1); // There are at least 2 items in the queue.
+			else return;
 		}
 		
 		@Override
@@ -64,7 +70,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 		@Override
 		public Item next() {
-			if (i >= size()) throw new java.util.NoSuchElementException();
+			if (i >= size()) throw new java.util.NoSuchElementException("Next item not exists");
 			else {
 				return randque[(head + (i++)) % length];
 			}
@@ -77,14 +83,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	private int randomIndex() { return (StdRandom.uniform(this.size()) + head) % length; }
 	
 	private void resize(int capacity) {
-		length = capacity;
 		Item[] copy = (Item[]) new Object[capacity];
-		int count = 0;
-		for(Item item : randque)
-			copy[count++] = item;
+		int i;
+		for(i = 0; i < size(); i ++)
+			copy[i] = randque[(head + i) % length];
 		randque = copy;
+		length = capacity;
 		head = 0;
-		tail = count;
+		tail = i;
+
+		StdOut.println(size());
 	}
 	
 	public static void main(String[] args) {
@@ -115,8 +123,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		queue.dequeue();
 		queue.dequeue();
 		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
+		queue.dequeue();
 
-		
 		StdOut.println(queue.size());
 
 		for(String str : queue)
