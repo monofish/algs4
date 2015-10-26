@@ -8,7 +8,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	private Item[] randque;
 
 	// construct an empty randomized queue
-	public RandomizedQueue(int capacity) {
+	public RandomizedQueue() {
+		int capacity = 5;
 		head = 0;
 		tail = 0;
 		length = capacity;
@@ -37,7 +38,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		int randIdx = randomIndex();
 		Item item = randque[randIdx];
 		randque[randIdx] = randque[head];
-		randque[head] = null;
+		randque[head] = null; // Avoid loitering
 		head = (head + 1) % length;
 		int size = size();
 		if (size > 0 && size <= length / 4) resize(length / 2);
@@ -91,52 +92,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		length = capacity;
 		head = 0;
 		tail = i;
-
-		StdOut.println(size());
 	}
 	
 	public static void main(String[] args) {
 
 		//Testing Client
-		RandomizedQueue<String> queue = new RandomizedQueue<String>(10);
-		queue.enqueue("1");
-		queue.enqueue("2");
-		queue.enqueue("3");
-		queue.enqueue("4");
-		queue.enqueue("5");
-		queue.enqueue("7");
-		queue.enqueue("6");
-		queue.enqueue("8");
-		queue.enqueue("9");
-		queue.enqueue("a");
-		queue.enqueue("e");
-		queue.enqueue("c");
-		queue.enqueue("f");
-		queue.enqueue("g");
-		queue.enqueue("b");
-		queue.enqueue("h");
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-		queue.dequeue();
-
-		StdOut.println(queue.size());
-
-		for(String str : queue)
-			StdOut.print(str);
-
+	
 	}
 
 }
