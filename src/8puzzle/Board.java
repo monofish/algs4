@@ -7,7 +7,7 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
     private int[][] board;
-    private ArrayList<Board> neighbors;
+    private Board[] neighbors;
     private int zeroI;
     private int zeroJ;
 
@@ -17,7 +17,6 @@ public class Board {
         if (blocks == null) throw new java.lang.NullPointerException();
         if (blocks.length != blocks[0].length || blocks.length == 0) throw new java.lang.IllegalArgumentException();
 
-        neighbors = new ArrayList<Board>();
         board = new int[blocks.length][blocks.length];
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks.length; j++) {
@@ -130,19 +129,21 @@ public class Board {
         return new Iterable<Board>() {
             @Override
             public Iterator<Board> iterator() {
-                if (neighbors.size() == 0) {
+                if (neighbors == null) {
+                    ArrayList<Board> neighborsBuilder = new ArrayList<Board>();
                     if (zeroI > 0) {
-                        neighbors.add(move(zeroI - 1, zeroJ));
+                        neighborsBuilder.add(move(zeroI - 1, zeroJ));
                     }
                     if (zeroI < dimension() - 1) {
-                        neighbors.add(move(zeroI + 1, zeroJ));
+                        neighborsBuilder.add(move(zeroI + 1, zeroJ));
                     }
                     if (zeroJ > 0) {
-                        neighbors.add(move(zeroI, zeroJ - 1));
+                        neighborsBuilder.add(move(zeroI, zeroJ - 1));
                     }
                     if (zeroJ < dimension() - 1) {
-                        neighbors.add(move(zeroI, zeroJ + 1));
+                        neighborsBuilder.add(move(zeroI, zeroJ + 1));
                     }
+                    neighbors = neighborsBuilder.toArray(new Board[neighborsBuilder.size()]);
                 }
                 return new NeighborsIterator();
             }
@@ -159,12 +160,12 @@ public class Board {
 
         @Override
         public boolean hasNext() {
-            return index < neighbors.size();
+            return index < neighbors.length;
         }
 
         @Override
         public Board next() {
-            if (hasNext()) return neighbors.get(index++);
+            if (hasNext()) return neighbors[index++];
             else return null;
         }
 
