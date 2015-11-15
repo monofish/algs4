@@ -5,9 +5,10 @@ import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
+    
+    private static final RectHV WHOLE_CANVAS = new RectHV(0, 0, 1, 1);
 
     private Node root;
-    private static RectHV WHOLE_CANVAS = new RectHV(0, 0, 1, 1);
     
     // construct an empty set of points 
     public KdTree() {
